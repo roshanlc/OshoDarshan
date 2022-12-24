@@ -4,4 +4,8 @@
     <string name="title_search">Search</string>
     <string name="title_quote">Quotes</string>
     <string name="title_about">About</string>
+    <string name="search_hint">Type here</string>
+    <string name="english">English</string>
+    <string name="hindi">Hindi</string>
+    <string name="topic_to_search_about">Topic to search about</string>
 </resources>
