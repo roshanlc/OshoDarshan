@@ -48,6 +48,10 @@ public class HomeFragment extends Fragment {
         Button searchBtn = binding.searchBtn;
         searchBtn.setOnClickListener((view -> {
             String data = binding.searchItem.getText().toString();
+            if(data.length() == 0 ){
+                Toast.makeText(getActivity(),"Please enter some search text!",Toast.LENGTH_SHORT).show();
+                return;
+            }
             String url  =  (binding.englishRadioBtn.isChecked())?String.format(oshoWorldEnglishURL,data):String.format(oshoWorldHindiURL,data);
             Log.i("INFO", "Searching about: "+url);
             // Use fetcher library for download

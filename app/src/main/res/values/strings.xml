@@ -8,4 +8,6 @@
     <string name="english">English</string>
     <string name="hindi">Hindi</string>
     <string name="topic_to_search_about">Topic to search about</string>
+    <string name="text_data">Album title</string>
+    <string name="download_btn">Download</string>
 </resources>
