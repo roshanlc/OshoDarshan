@@ -1,7 +1,6 @@
 package com.roshanam.oshodarshan.ui.home;
 
-import android.content.Context;
-import android.hardware.biometrics.BiometricManager;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,12 +15,16 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.roshanam.oshodarshan.databinding.FragmentHomeBinding;
+import com.roshanam.oshodarshan.ui.utils.NetworkCall;
+import com.roshanam.oshodarshan.ui.utils.Result;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import java.io.IOException;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -31,10 +34,6 @@ public class HomeFragment extends Fragment {
     private FragmentHomeBinding binding;
     private final String oshoWorldHindiURL = "https://www.oshoworld.com/?s=%s&id=14133";
     private final String oshoWorldEnglishURL = "https://www.oshoworld.com/?s=%s&id=14289";
-
-
-
-
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -48,21 +47,34 @@ public class HomeFragment extends Fragment {
         Button searchBtn = binding.searchBtn;
         searchBtn.setOnClickListener((view -> {
             String data = binding.searchItem.getText().toString();
-            if(data.length() == 0 ){
-                Toast.makeText(getActivity(),"Please enter some search text!",Toast.LENGTH_SHORT).show();
+            if (data.length() == 0) {
+                Toast.makeText(getActivity(), "Please enter some search text!", Toast.LENGTH_SHORT).show();
                 return;
             }
-            String url  =  (binding.englishRadioBtn.isChecked())?String.format(oshoWorldEnglishURL,data):String.format(oshoWorldHindiURL,data);
-            Log.i("INFO", "Searching about: "+url);
+            String url = (binding.englishRadioBtn.isChecked()) ? String.format(oshoWorldEnglishURL, data) : String.format(oshoWorldHindiURL, data);
+            Log.i("INFO", "Searching about: " + url);
             // Use fetcher library for download
-
-
-//            ExecutorService executor = Executors.newSingleThreadExecutor();
+            ExecutorService executor = Executors.newSingleThreadExecutor();
+//            Callable<Object> x = null;
 //            Future<Object> foo = (Future<Object>) executor.submit(() -> {
 //                 searchFromOshoWorld(url);
-//
 //            });
-//           executor.shutdown();
+//
+            //Create callable instance
+            Callable<Result> callable = new NetworkCall(url);
+            Future<Result> foo = executor.submit(callable);
+
+
+            try {
+                Result x = foo.get();
+
+                System.out.println("Fetched object = " + x);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            executor.shutdown();
         }));
 
         return root;
@@ -74,21 +86,7 @@ public class HomeFragment extends Fragment {
         binding = null;
     }
 
-    void searchFromOshoWorld(String url){
-        try {
 
 
-            Document
-                    doc = Jsoup.connect(url)
-                    .timeout(10000)
-                    .get();
 
-            System.out.println(doc.getAllElements());
-
-        } catch (Exception e){
-            Toast.makeText(getActivity(),"Some error occurred!!",Toast.LENGTH_SHORT).show();
-
-            e.printStackTrace();
-        }
-    }
 }
