@@ -14,12 +14,13 @@ import java.util.Objects;
  */
 public class Result {
     private final String errorMsg = "We're sorry, but your search";
+    private boolean hasResults = true;
     private Document document;
     private Exception exception;
 
     public Result(){
         this.document = new Document("");
-        this.exception = new Exception("Empty object");
+        this.exception = null;
     }
 
     public Result(Document document, Exception exception) {
@@ -48,13 +49,21 @@ public class Result {
         return this.exception != null;
     }
 
+    public boolean isHasResults() {
+        return hasResults;
+    }
+
+    public void setHasResults(boolean hasResults) {
+        this.hasResults = hasResults;
+    }
+
     // Check if no results exist for the searched item
     public boolean isThereNoResults(){
         Element errorElem = this.document.selectFirst(Xpath.errorMsgSelectorCSS);
         if (errorElem != null && errorElem.hasText()){
-            return errorElem.text().contains(this.errorMsg);
+            this.hasResults = !errorElem.text().contains(this.errorMsg);
         }
-        return false;
+        return this.hasResults;
     }
 
 }

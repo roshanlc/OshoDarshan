@@ -30,13 +30,13 @@ public class NetworkCall implements Callable<Result> {
         return searchFromOshoWorld(url);
     }
 
-    Result searchFromOshoWorld(String url) {
+    public Result searchFromOshoWorld(String url) {
         try {
           Document  doc = Jsoup.connect(url)
                     .timeout(10000)
                     .get();
             this.result.setDocument(doc);
-            System.out.println("Title fetched =="+doc.title());
+            System.out.println("Title fetched =="+doc.title()); // TODO: remove later
 
 
         } catch (Exception e) {
@@ -45,8 +45,7 @@ public class NetworkCall implements Callable<Result> {
             // e.printStackTrace();
             this.result.setException(e);
         }
-
-        System.out.println("Results found  =="+result.isThereNoResults());
+        System.out.println("Results found  == "+result.isThereNoResults()); // TODO: remove later
 
         return this.result;
     }
