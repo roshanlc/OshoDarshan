@@ -11,12 +11,14 @@ import java.util.concurrent.Callable;
 public class NetworkCall implements Callable<Result> {
 
     private String url;
+    private Result result;
 
     public NetworkCall() {
-
+        this.result = new Result();
     }
     public NetworkCall(String url) {
         this.url = url;
+        this.result = new Result();
     }
 
     public void setUrl(String url) {
@@ -29,23 +31,24 @@ public class NetworkCall implements Callable<Result> {
     }
 
     Result searchFromOshoWorld(String url) {
-        Result r = new Result(null,null);
-        Document doc = new Document(url);
         try {
-            doc = Jsoup.connect(url)
+          Document  doc = Jsoup.connect(url)
                     .timeout(10000)
                     .get();
-            r.result = doc;
+            this.result.setDocument(doc);
             System.out.println("Title fetched =="+doc.title());
+
 
         } catch (Exception e) {
             //Toast.makeText(getActivity(), "Some error occurred!!", Toast.LENGTH_SHORT).show();
 
-            e.printStackTrace();
-            r.e = e;
+            // e.printStackTrace();
+            this.result.setException(e);
         }
 
-        return r;
+        System.out.println("Results found  =="+result.isThereNoResults());
+
+        return this.result;
     }
 }
 

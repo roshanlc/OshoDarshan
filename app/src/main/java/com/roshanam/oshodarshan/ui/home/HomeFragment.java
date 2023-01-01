@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -18,16 +17,13 @@ import com.roshanam.oshodarshan.databinding.FragmentHomeBinding;
 import com.roshanam.oshodarshan.ui.utils.NetworkCall;
 import com.roshanam.oshodarshan.ui.utils.Result;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-
-import java.io.IOException;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class HomeFragment extends Fragment {
 
@@ -53,26 +49,27 @@ public class HomeFragment extends Fragment {
             }
             String url = (binding.englishRadioBtn.isChecked()) ? String.format(oshoWorldEnglishURL, data) : String.format(oshoWorldHindiURL, data);
             Log.i("INFO", "Searching about: " + url);
-            // Use fetcher library for download
-            ExecutorService executor = Executors.newSingleThreadExecutor();
-//            Callable<Object> x = null;
-//            Future<Object> foo = (Future<Object>) executor.submit(() -> {
-//                 searchFromOshoWorld(url);
-//            });
-//
+
+            ExecutorService executor = Executors.newFixedThreadPool(2);
             //Create callable instance
             Callable<Result> callable = new NetworkCall(url);
             Future<Result> foo = executor.submit(callable);
-
+            Result result = new Result();
 
             try {
-                Result x = foo.get();
-
-                System.out.println("Fetched object = " + x);
-
+                result = foo.get();
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
+            if (result.isThereException()) {
+                Toast.makeText(getActivity(), "Something went wrong!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            boolean r = result.isThereNoResults();
+            Log.d("DEBUG", "onCreateView: Result of error message = " + r);
+
 
             executor.shutdown();
         }));
@@ -80,13 +77,12 @@ public class HomeFragment extends Fragment {
         return root;
     }
 
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
     }
-
-
 
 
 }
