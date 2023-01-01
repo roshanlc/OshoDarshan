@@ -1,46 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView
 
-    android:layout_height="wrap_content"
-    android:layout_width="match_parent"
-    android:layout_margin="6dp"
-    app:cardCornerRadius="2dp"
-    app:cardUseCompatPadding="false"
-    android:padding="8dp"
-
-    app:cardElevation="1.5dp"
-
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:maxHeight="400dp"
+    android:layout_margin="2dp"
+    app:cardCornerRadius="2dp"
+    app:cardElevation="1dp"
+    app:cardUseCompatPadding="false">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="8dp">
+        android:layout_height="wrap_content">
 
-
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="@string/text_number"
+    android:layout_margin="1dp"
+    android:padding="1dp"
+    android:id="@+id/countValue"
+    />
         <TextView
-            android:id="@+id/itemValue"
+            android:id="@+id/nameValue"
             android:layout_width="247dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_margin="3dp"
+            android:layout_margin="1dp"
+            android:layout_marginStart="3dp"
             android:minWidth="350dp"
             android:minHeight="50dp"
-            android:padding="5dp"
+            android:padding="1dp"
             android:text="@string/text_data"
 
             android:textColor="@color/black"
 
-            android:textSize="20sp" />
+            android:textSize="16sp" />
+
 
         <Button
             android:id="@+id/downloadAlbum"
-            android:layout_width="73dp"
-            android:layout_height="55dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="3.5dp"
             android:layout_weight="1"
-            android:text="@string/download_btn" />
+            android:padding="2dp"
+            android:text="@string/download_btn"
+            android:textSize="15sp" />
 
+
+        <TextView
+            android:id="@+id/urlValue"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:text="@string/text_download"
+            android:textColor="@color/black"
+            android:visibility="invisible"
+            tools:ignore="SmallSp" />
 
     </LinearLayout>
 

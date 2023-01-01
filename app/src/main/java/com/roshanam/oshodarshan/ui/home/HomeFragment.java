@@ -1,6 +1,10 @@
 package com.roshanam.oshodarshan.ui.home;
 
 
+import static com.roshanam.oshodarshan.R.*;
+
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,12 +17,21 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.roshanam.oshodarshan.MainActivity;
+import com.roshanam.oshodarshan.R;
 import com.roshanam.oshodarshan.databinding.FragmentHomeBinding;
+import com.roshanam.oshodarshan.ui.utils.Album;
+import com.roshanam.oshodarshan.ui.utils.AlbumsAdapter;
 import com.roshanam.oshodarshan.ui.utils.NetworkCall;
 import com.roshanam.oshodarshan.ui.utils.Result;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -32,8 +45,11 @@ public class HomeFragment extends Fragment {
     private FragmentHomeBinding binding;
     private final String oshoWorldHindiURL = "https://www.oshoworld.com/?s=%s&id=14133";
     private final String oshoWorldEnglishURL = "https://www.oshoworld.com/?s=%s&id=14289";
+    private AlbumsAdapter albumsAdapter;
+    private Context context;
+    private RecyclerView recyclerView;
 
-
+    @SuppressLint("ResourceType")
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         HomeViewModel homeViewModel =
@@ -41,9 +57,18 @@ public class HomeFragment extends Fragment {
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-
+        context = getContext();
         Button searchBtn = binding.searchBtn;
         searchBtn.setOnClickListener((view -> {
+
+            // Check if button is set to "Clear"
+            if(searchBtn.getText() == getResources().getText(string.title_clear)){
+                searchBtn.setText(string.title_search);
+                // Clear the list as well
+                clearList();
+                showToast("List has been cleared!!");
+                return;
+            }
             String data = binding.searchItem.getText().toString();
             if (data.length() == 0) {
                 showToast("Please enter some search text!");
@@ -63,12 +88,7 @@ public class HomeFragment extends Fragment {
 //                    Future<Result> foo = executor.submit(callable);
                     NetworkCall networkCall = new NetworkCall(url);
                     Result result = networkCall.searchFromOshoWorld(url);
-//
-//                    try {
-//                        result = foo.get();
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
+
 
                     assert result != null;
                     if (result.isThereException()) {
@@ -79,12 +99,16 @@ public class HomeFragment extends Fragment {
                     if (!result.isHasResults()) {
                         showToast("No search results found!!");
 //                        Toast.makeText(getActivity(), "No search results found!", Toast.LENGTH_SHORT).show();
-                    return;
+                        return;
+                    } else {
+                        showToast("Results found!!");
                     }
 
                     // now run functions to extract album titles and link
-                    result.extractAlbums();
-
+                    ArrayList<Album> albums = result.extractAlbums();
+                    updateList(albums);
+                    // Set button text to clear
+                    searchBtn.setText(string.title_clear);
 
                 }
             };
@@ -103,7 +127,38 @@ public class HomeFragment extends Fragment {
     }
 
     public void showToast(final String toast) {
-        getActivity().runOnUiThread(()->Toast.makeText(getActivity(), toast, Toast.LENGTH_SHORT).show());
+        getActivity().runOnUiThread(() -> Toast.makeText(getActivity(), toast, Toast.LENGTH_SHORT).show());
 
+    }
+
+    public void updateList(ArrayList<Album> albums) {
+
+        getActivity().runOnUiThread(() -> {
+            // System.out.println("Over here!!"); // TODO: remove later
+            recyclerView = getActivity().findViewById(id.recyclerList);
+
+            albumsAdapter = new AlbumsAdapter(albums);
+
+
+            RecyclerView.LayoutManager linearLayout = new LinearLayoutManager(context.getApplicationContext());
+
+            recyclerView.setLayoutManager(linearLayout);
+
+            recyclerView.setItemAnimator(new DefaultItemAnimator());
+//         /   recyclerView.addItemDecoration(new DividerDecoration(this))
+            recyclerView.setAdapter(albumsAdapter);
+        });
+    }
+
+
+    public void clearList() {
+
+        getActivity().runOnUiThread(() -> {
+            // System.out.println("Over here!!"); // TODO: remove later
+            recyclerView = getActivity().findViewById(id.recyclerList);
+
+            recyclerView.setAdapter(new AlbumsAdapter(new ArrayList<Album>()));
+
+        });
     }
 }
