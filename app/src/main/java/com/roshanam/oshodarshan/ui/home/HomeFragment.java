@@ -72,16 +72,20 @@ public class HomeFragment extends Fragment {
 
                     assert result != null;
                     if (result.isThereException()) {
-                        System.out.println(result.getException().getMessage()); // TODO: remove later
                         showToast("Something went wrong!!");
                         //  Toast.makeText(getActivity(), "Something went wrong!", Toast.LENGTH_SHORT).show();
                         return;
                     }
                     if (!result.isHasResults()) {
                         showToast("No search results found!!");
-
 //                        Toast.makeText(getActivity(), "No search results found!", Toast.LENGTH_SHORT).show();
+                    return;
                     }
+
+                    // now run functions to extract album titles and link
+                    result.extractAlbums();
+
+
                 }
             };
             executor.submit(workThread);

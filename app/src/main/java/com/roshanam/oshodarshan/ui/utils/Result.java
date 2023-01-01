@@ -6,7 +6,11 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+
+import kotlin.io.path.ExperimentalPathApi;
 
 
 /**
@@ -64,6 +68,20 @@ public class Result {
             this.hasResults = !errorElem.text().contains(this.errorMsg);
         }
         return this.hasResults;
+    }
+
+    public ArrayList<Album> extractAlbums() {
+        ArrayList<Album> albums = new ArrayList<>();
+        Elements all = this.document.selectXpath(Xpath.allAlbumSelector);
+        for(Element a: all){
+            String name = a.text();
+            String url = a.attr("href");
+            System.out.println(name +"=>>>"+url);
+            albums.add(new Album(name,url));
+        }
+
+        System.out.println("Total albums extracted = "+albums.size());
+        return albums;
     }
 
 }
