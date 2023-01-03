@@ -33,7 +33,7 @@ public class NetworkCall implements Callable<Result> {
     public Result searchFromOshoWorld(String url) {
         try {
           Document  doc = Jsoup.connect(url)
-                    .timeout(10000)
+                    .timeout(45000)
                     .get();
             this.result.setDocument(doc);
             System.out.println("Title fetched =="+doc.title()); // TODO: remove later

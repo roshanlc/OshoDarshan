@@ -49,6 +49,7 @@ public class HomeFragment extends Fragment {
     private Context context;
     private RecyclerView recyclerView;
 
+
     @SuppressLint("ResourceType")
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -77,8 +78,8 @@ public class HomeFragment extends Fragment {
             }
             String url = (binding.englishRadioBtn.isChecked()) ? String.format(oshoWorldEnglishURL, data) : String.format(oshoWorldHindiURL, data);
             Log.i("INFO", "Searching about: " + url);
-
             ExecutorService executor = Executors.newFixedThreadPool(2);
+
             Thread workThread = new Thread() {
                 @Override
                 public void run() {
@@ -161,4 +162,8 @@ public class HomeFragment extends Fragment {
 
         });
     }
+
+
+
+
 }

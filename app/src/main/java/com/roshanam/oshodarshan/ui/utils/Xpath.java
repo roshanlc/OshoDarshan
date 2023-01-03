@@ -8,5 +8,6 @@ public final class Xpath {
     // Selector for albums listed on result page
     public static final String allAlbumSelector = "//div[contains(@class,'masonry_item')]/article/div/h4/a";
     // Selector for all episodes in an album page
-    public static final String allEpisodeSelector = "//a[contains(@class,'ai-track-btn') and (@aria-label='Download this track')]";
+    public static final String allEpisodeSelector = "ai-track-btn";
+            //"//a[contains(@class,'ai-track-btn') and (@aria-label='Download this track')]";
 }
