@@ -76,11 +76,11 @@ public class Result {
         for(Element a: all){
             String name = a.text();
             String url = a.attr("href");
-            System.out.println(name +"=>>>"+url); // TODO: remove later
+            Log.i("INFO",name +"=>>>"+url); // TODO: remove later
             albums.add(new Album(name,url));
         }
 
-        System.out.println("Total albums extracted = "+albums.size());
+        Log.i("INFO","Total albums extracted = "+albums.size());
         return albums;
     }
 

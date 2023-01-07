@@ -1,5 +1,7 @@
 package com.roshanam.oshodarshan.ui.utils;
 
+import android.util.Log;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -36,7 +38,7 @@ public class NetworkCall implements Callable<Result> {
                     .timeout(45000)
                     .get();
             this.result.setDocument(doc);
-            System.out.println("Title fetched =="+doc.title()); // TODO: remove later
+            Log.i("INFO","Title fetched =="+doc.title()); // TODO: remove later
 
 
         } catch (Exception e) {
@@ -45,7 +47,7 @@ public class NetworkCall implements Callable<Result> {
             // e.printStackTrace();
             this.result.setException(e);
         }
-        System.out.println("Results found  == "+result.isThereNoResults()); // TODO: remove later
+        Log.i("INFO","Results found  == "+result.isThereNoResults()); // TODO: remove later
 
         return this.result;
     }

@@ -1,13 +1,13 @@
 package com.roshanam.oshodarshan.ui.utils;
 
 import android.os.Build;
+import android.util.Log;
+import android.webkit.ValueCallback;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import androidx.annotation.RequiresApi;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,6 +18,8 @@ public class AlbumDownloader {
 
 
     public AlbumDownloader(Album album) {
+
+
         this.album = album;
         this.episodes = new ArrayList<>();
     }
@@ -39,24 +41,57 @@ public class AlbumDownloader {
      */
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void extractEpisodes() throws IOException {
-        Document doc = Jsoup.connect(this.album.getUrl())
-                .timeout(45000)
-                .get();
-        System.out.println("title for the album page = " + doc.title());
-        //Elements all = doc.selectXpath(Xpath.allEpisodeSelector);
-        final String epSelector = Xpath.allEpisodeSelector;
-        Elements allElem = doc.getAllElements();
-        allElem.stream().filter(element -> element.hasAttr("title"))
-                .forEach(System.out::println);
-              // .forEach(element -> System.out.println(element.attr("download")+" -> "+element.attr("href")));
-        System.out.println("Elements ?= " + allElem.size());
+        Log.i("INFO", "extractEpisodes: over here");
 
-//        for (Element elem : allElem) {
-//            String url = elem.attr("href");
-//            String name = elem.attr("download");
-//            System.out.println("Url = " + url + " -> Name=" + name); //TODO: remove later
-//            this.episodes.add(new Episode(name, url));
-//        }
+
+
+
+//         WebClient webClient = new WebClient();
+//         webClient.setJavaScriptTimeout(45000);
+//       HtmlPage page = webClient.getPage(this.album.getUrl());
+//        Log.i("INFO", String.valueOf(page.getElementsByTagName("a")));
+//         Log.i("INFO","title for the album page = " + page.getTitleText());
+//
+
+//        Document doc = Jsoup.connect(this.album.getUrl())
+//                .timeout(45000)
+//                .get();
+//        //Elements all = doc.selectXpath(Xpath.allEpisodeSelector);
+//        final String epSelector = Xpath.allEpisodeSelector;
+//        Elements allElem = doc.getAllElements();
+//        allElem.stream().filter(element -> element.hasAttr("title"))
+//                .forEach(System.out::println);
+//              // .forEach(element -> Log.i("INFO",element.attr("download")+" -> "+element.attr("href")));
+//        Log.i("INFO","Elements ?= " + allElem.size());
+
+
 
     }
+
+    class WebViewClientImpl extends WebViewClient {
+
+
+        @Override
+        public void onPageFinished(WebView view, String url) {
+//            super.onPageFinished(view, url);
+            String func = "function getEpisodeLinks(){" +
+                    "let arr = $x(\"//a[contains(@class,'ai-track-btn')]\");" +
+                    "return arr.map(item => {return item.href});" +
+                    "}";
+            view.evaluateJavascript(func,  new ValueCallback<String>() {
+                @Override
+                public void onReceiveValue(String s) {
+                    printSomething(s);
+                }
+            });
+
+
+        }
+        public void printSomething(String data){
+            Log.i("INFO",data);
+        }
+    }
+
 }
+
+

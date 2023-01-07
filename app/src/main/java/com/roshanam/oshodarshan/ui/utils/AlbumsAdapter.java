@@ -1,8 +1,12 @@
 package com.roshanam.oshodarshan.ui.utils;
 
+
 import static java.lang.String.*;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,9 +32,11 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.ViewHolder
 
 
     private ArrayList<Album> albums;
+    private MainActivity mainActivity;
 
-    public AlbumsAdapter(ArrayList<Album> albums) {
+    public AlbumsAdapter(ArrayList<Album> albums, MainActivity mainActivity) {
         this.albums = albums;
+        this.mainActivity  = mainActivity;
     }
 
     @NonNull
@@ -51,27 +57,37 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.ViewHolder
         holder.name.setText(name);
         holder.url.setText(url);
         holder.count.setText(format("%d.", position + 1));
-        holder.downloadBtn.setOnClickListener((view -> {
+        holder.downloadBtn.setOnClickListener(view -> {
             ExecutorService executor = Executors.newSingleThreadExecutor();
             Thread workThread = new Thread() {
                 @Override
                 public void run() {
-                    System.out.println("Starting episodes extraction for the album, name="+name+", url = "+url);
+                    Log.i("INFO","Starting episodes extraction for the album, name="+name+", url = "+url);
                     // Create new album downloader object
-                    AlbumDownloader albumDownloader = new AlbumDownloader(album);
+                   // AlbumDownloader albumDownloader = new AlbumDownloader(album);
                     try {
-                        albumDownloader.extractEpisodes();
-                    } catch (IOException e) {
-                        Log.d("DEBUG", "onBindViewHolder: " + e.getMessage());
+                        // albumDownloader.extractEpisodes();
+
+
+                            Intent httpIntent = new Intent(Intent.ACTION_VIEW);
+                            httpIntent.setData(Uri.parse(url));
+
+                        mainActivity.startActivity(httpIntent);
+
+
+                    } catch (Exception e) {
+                        Log.i("INFO", "onBindViewHolder: " + e.getMessage());
                     }
                 }
+
+
             };
 
             // Run in background
             executor.submit(workThread);
             executor.shutdown();
 
-        }));
+        });
 
     }
 

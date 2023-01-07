@@ -1,16 +1,19 @@
 package com.roshanam.oshodarshan.ui.home;
 
 
-import static com.roshanam.oshodarshan.R.*;
+import static com.roshanam.oshodarshan.R.id;
+import static com.roshanam.oshodarshan.R.string;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.AsyncTask;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -18,12 +21,10 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.roshanam.oshodarshan.MainActivity;
-import com.roshanam.oshodarshan.R;
 import com.roshanam.oshodarshan.databinding.FragmentHomeBinding;
 import com.roshanam.oshodarshan.ui.utils.Album;
 import com.roshanam.oshodarshan.ui.utils.AlbumsAdapter;
@@ -31,14 +32,8 @@ import com.roshanam.oshodarshan.ui.utils.NetworkCall;
 import com.roshanam.oshodarshan.ui.utils.Result;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 public class HomeFragment extends Fragment {
 
@@ -48,6 +43,7 @@ public class HomeFragment extends Fragment {
     private AlbumsAdapter albumsAdapter;
     private Context context;
     private RecyclerView recyclerView;
+    private MainActivity mainActivity;
 
 
     @SuppressLint("ResourceType")
@@ -59,6 +55,9 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         context = getContext();
+        WebView webView = binding.webView;
+        mainActivity = (MainActivity) requireActivity();
+
         Button searchBtn = binding.searchBtn;
         searchBtn.setOnClickListener((view -> {
 
@@ -83,7 +82,7 @@ public class HomeFragment extends Fragment {
             Thread workThread = new Thread() {
                 @Override
                 public void run() {
-                    System.out.println("URL = " + url);
+                    Log.i("INFO","URL = " + url);
                     //Create callable instance
 //                    Callable<Result> callable = new NetworkCall(url);
 //                    Future<Result> foo = executor.submit(callable);
@@ -135,10 +134,10 @@ public class HomeFragment extends Fragment {
     public void updateList(ArrayList<Album> albums) {
 
         getActivity().runOnUiThread(() -> {
-            // System.out.println("Over here!!"); // TODO: remove later
+            // Log.i("INFO","Over here!!"); // TODO: remove later
             recyclerView = getActivity().findViewById(id.recyclerList);
 
-            albumsAdapter = new AlbumsAdapter(albums);
+            albumsAdapter = new AlbumsAdapter(albums,mainActivity);
 
 
             RecyclerView.LayoutManager linearLayout = new LinearLayoutManager(context.getApplicationContext());
@@ -155,14 +154,13 @@ public class HomeFragment extends Fragment {
     public void clearList() {
 
         getActivity().runOnUiThread(() -> {
-            // System.out.println("Over here!!"); // TODO: remove later
+            // Log.i("INFO","Over here!!"); // TODO: remove later
             recyclerView = getActivity().findViewById(id.recyclerList);
 
-            recyclerView.setAdapter(new AlbumsAdapter(new ArrayList<Album>()));
+            recyclerView.setAdapter(new AlbumsAdapter(new ArrayList<Album>(),mainActivity));
 
         });
     }
-
 
 
 
