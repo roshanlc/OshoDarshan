@@ -1,6 +1,7 @@
 package com.roshanam.oshodarshan.ui.utils;
 
 
+import static android.app.PendingIntent.getActivity;
 import static java.lang.String.*;
 
 import android.annotation.SuppressLint;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -63,16 +65,18 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.ViewHolder
                 @Override
                 public void run() {
                     Log.i("INFO","Starting episodes extraction for the album, name="+name+", url = "+url);
+                    mainActivity.showToast("You will be taken to download page shortly!!");
                     // Create new album downloader object
-                   // AlbumDownloader albumDownloader = new AlbumDownloader(album);
+                   AlbumDownloader albumDownloader = new AlbumDownloader(album);
                     try {
-                        // albumDownloader.extractEpisodes();
+                       ArrayList<AlbumEpisodes>  albumEpisodes =  albumDownloader.extractEpisodes();
 
+                       albumEpisodes.forEach(ep -> {
+                           Intent httpIntent = new Intent(Intent.ACTION_VIEW);
+                           httpIntent.setData(Uri.parse(ep.getDownloadUrl()));
+                           mainActivity.startActivity(httpIntent);
+                       });
 
-                            Intent httpIntent = new Intent(Intent.ACTION_VIEW);
-                            httpIntent.setData(Uri.parse(url));
-
-                        mainActivity.startActivity(httpIntent);
 
 
                     } catch (Exception e) {
@@ -122,5 +126,8 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.ViewHolder
             downloadBtn = v.findViewById(R.id.downloadAlbum);
         }
     }
+
+
+
 
 }
