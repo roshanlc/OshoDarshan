@@ -13,6 +13,7 @@
     <string name="text_data">Album title</string>
     <string name="text_download">Download url</string>
     <string name="text_number">0</string>
+    <string name="quote_demo">Creativity is the greatest rebellion in the face of orthodoxy.</string>
 
     <string name="download_btn">Download</string>
 </resources>
