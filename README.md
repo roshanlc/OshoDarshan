@@ -5,10 +5,10 @@
 
 
 ### Screenshots
-<img src="./assets/sc-1.jpeg" height="400px">
-<img src="./assets/sc-2.jpeg" height="400px">
-<img src="./assets/sc-3.jpeg" height="400px">
-<img src="./assets/sc-4.jpeg" height="400px">
+<img src="./assets/sc-1.jpeg" height="600px">
+<img src="./assets/sc-2.jpeg" height="600px">
+<img src="./assets/sc-3.jpeg" height="600px">
+<img src="./assets/sc-4.jpeg" height="600px">
 
 ### Download
 [Click here to download apk](./assets/oshoDarshan.apk)
