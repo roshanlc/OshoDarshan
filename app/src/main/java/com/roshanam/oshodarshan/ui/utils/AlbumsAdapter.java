@@ -5,6 +5,7 @@ import static android.app.PendingIntent.getActivity;
 import static java.lang.String.*;
 
 import android.annotation.SuppressLint;
+import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -35,6 +36,7 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.ViewHolder
 
     private ArrayList<Album> albums;
     private MainActivity mainActivity;
+
 
     public AlbumsAdapter(ArrayList<Album> albums, MainActivity mainActivity) {
         this.albums = albums;
@@ -71,6 +73,7 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.ViewHolder
                     try {
                        ArrayList<AlbumEpisodes>  albumEpisodes =  albumDownloader.extractEpisodes();
 
+                       // Download related stuff for each episode
                        albumEpisodes.forEach(ep -> {
                            Intent httpIntent = new Intent(Intent.ACTION_VIEW);
                            httpIntent.setData(Uri.parse(ep.getDownloadUrl()));
